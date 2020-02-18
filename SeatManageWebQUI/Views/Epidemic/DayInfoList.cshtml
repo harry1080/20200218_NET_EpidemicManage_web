@@ -1,0 +1,205 @@
+﻿@model com.gxchuwei.Model.PersonInfo
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <!--框架必需start-->
+    <script type="text/javascript" src="~/quickui/libs/js/jquery.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/language/cn.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/framework.js"></script>
+    <link href="~/quickui/libs/css/import_basic.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" id="skin" prePath="~/quickui/" />
+    <link rel="stylesheet" type="text/css" id="customSkin" />
+    <!--框架必需end-->
+    <link rel="stylesheet" type="text/css" href="~/quickui/style/style.css" />
+    <script src="~/quickui/libs/js/table/quiGrid.js" type="text/javascript"></script>
+    <!--引入提示组件start-->
+    <script type="text/javascript" src="~/quickui/libs/js/popup/toast.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/popup/notice.js"></script>
+    <!--引入提示组件end-->
+    <script type="text/javascript" src="~/quickui/libs/js/form/datePicker/WdatePicker.js"></script>
+    <script src="~/quickui/libs/js/form/validationRule.js" type="text/javascript"></script>
+    <script src="~/quickui/libs/js/form/validation.js" type="text/javascript"></script>
+
+    <style>
+        label {
+            width: 200px;
+            height: 30px;
+            line-height: 28px;
+            border-radius: 4px;
+            outline: none;
+            box-sizing: border-box;
+            padding: 0 5px;
+            color: #657180;
+            font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="page_content">
+        <form id="queryForm" name="queryForm" method="post"></form>
+            <div class="searchContent">
+                <form id="queryForm" name="queryForm" method="post">
+                    <table style="float: left;margin-left:10px;margin-top:10px;">
+                        <tr>
+                            <td>姓名：</td>
+                            <td style="width:150px;">
+                                <label>@Model.PersonName</label> 
+                            </td>
+                            <td>人员分类：</td>
+                            <td style="width:150px;">
+                                @Model.PersonType
+                            </td>
+                            <td>性别：</td>
+                            <td style="width:150px;">
+                                @Model.Sex
+                            </td>
+                            <td>身份证：</td>
+                            <td style="width:150px;">
+                                @Model.IDCardNo
+                            </td>
+                            <td>电话号码：</td>
+                            <td style="width:150px;">
+                                @Model.PhoneNo
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>所属区域：</td>
+                            <td style="width:150px;">
+                                @Model.Area
+                            </td>
+                            <td>户籍：</td>
+                            <td style="width:150px;">
+                                @Model.Native
+                            </td>
+                            <td>到港时间：</td>
+                            <td style="width:150px;">
+                                @Model.ArriveTime
+                            </td>
+                            <td>到港目的：</td>
+                            <td style="width:150px;">
+                                @Model.ArrivePurpose
+                            </td>
+                            <td>交通方式：</td>
+                            <td style="width:150px;">
+                                @Model.Traffic
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td>现居住地：</td>
+                            <td style="width:150px;">
+                                @Model.NowAddress
+                            </td>
+                            <td>负责人：</td>
+                            <td style="width:150px;">
+                                @Model.ManageMan
+                            </td>
+                            <td>联系电话：</td>
+                            <td style="width:150px;">
+                                @Model.ManageManPhone
+                            </td>
+                            <td>管控措施：</td>
+                            <td style="width:150px;">
+                                @Model.DisposeType
+                            </td>
+                        </tr>
+                        <!--20200218zdh 添加关联人员-->
+                         <tr>
+                            <td>同行人员：</td>
+                             <td  colspan="7">
+                                 @foreach (var item in Model.TogetherPerson)
+                                 {
+                                    <a href="@(Url.Action("DayInfoList","Epidemic") + "?ID=" + @item.ID)" style="color:blue;">@item.PersonName</a>
+                                 }
+                            </td>
+                        </tr>
+                    </table>
+                    </form>
+</div>
+            <div class="clear"></div>
+            <br />
+            <div class="infoCard infoCard2">
+                <div class="title">
+                    <span>记录列表</span>
+                </div>
+                @*<div class="box_tool_min padding_top2 padding_bottom2 padding_right5">
+                    <div class="center">
+                        <div class="left">
+                            <div class="right">
+                                <div class="padding_top5 padding_left10">
+                                    <a href="javascript:addNewBlack();"><span class="icon_add">新增</span></a>
+                                    <div class="box_tool_line"></div>
+                                    <a href="javascript:onDeleteAll();"><span class="icon_delete">移除</span></a>
+                                    <div class="box_tool_line"></div>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>*@
+                <div id="dataBasic"></div>
+            </div>
+</div>
+
+    <script>
+
+
+        var grid = null;
+
+        var tbData = @MvcHtmlString.Create(@ViewBag.tbData);
+
+        //数据表格使用
+        var gridData = tbData;
+
+        function initComplete() {
+            grid = $("#dataBasic").quiGrid({
+                columns: [
+                    { display: '编号', name: 'ID', align: 'center', width: "10%"},
+                    { display: '上报时间', name: 'DeclarationTime', align: 'left', width: "15%"},
+                    { display: '体温', name: 'Temp', width: "10%" },
+                    { display: '健康状态', name: 'HealthState', width: "10%" },
+                    { display: '地址', name: 'Location', width: "25%" },
+                    { display: '备注', name: 'Remark', width: "30%" },
+                    
+                ],
+                url: '/Epidemic/DayInfoData', sortName: 'ID', rownumbers: true, checkbox: true,
+                height: '100%', width: "100%", pageSize: 10, percentWidthMode: true
+            });
+        }
+
+        function searchHandler() {
+            $.ajax({
+                url: "@Url.Action("DayInfoData")", //你的路由地址
+                type: "post",
+                dataType: "text",
+                data: {ID : "@ViewBag.ID"},
+                timeout: 30000,
+                success: function (data) {
+                    console.log(data);
+                    var obj = eval('(' + data + ')');
+                    grid.loadData(obj);
+                },
+                error: function () {
+                    top.Toast('showErrorToast', '发生不可预计错误，请重新尝试');
+                }
+            });
+        }
+
+        $(function () {
+            searchHandler();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <!--框架必需start-->
+    <script type="text/javascript" src="~/quickui/libs/js/jquery.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/language/cn.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/framework.js"></script>
+    <link href="~/quickui/libs/css/import_basic.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" id="skin" prePath="~/quickui/" />
+    <link rel="stylesheet" type="text/css" id="customSkin" />
+    <!--框架必需end-->
+    <link rel="stylesheet" type="text/css" href="~/quickui/style/style.css" />
+    <script src="~/quickui/libs/js/table/quiGrid.js" type="text/javascript"></script>
+    <!--引入提示组件start-->
+    <script type="text/javascript" src="~/quickui/libs/js/popup/toast.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/popup/notice.js"></script>
+    <!--引入提示组件end-->
+    <script type="text/javascript" src="~/quickui/libs/js/form/datePicker/WdatePicker.js"></script>
+    <script src="~/quickui/libs/js/form/validationRule.js" type="text/javascript"></script>
+    <script src="~/quickui/libs/js/form/validation.js" type="text/javascript"></script>
+
+    <style>
+        
+
+        .tdContentStyle1 {
+            font-size: 16px;
+            color: #ea5504;
+            background-image: url(<%=path%>/libs/images/icons/hot.jpg);
+            background-position: 90% 10px;
+            background-repeat: no-repeat;
+            padding: 5px 0 0 10px;
+        }
+
+        .tdContentStyle2 {
+            font-size: 16px;
+            color: #ea5504;
+            padding: 5px 0 0 10px;
+        }
+
+        .tdContentStyle3 {
+            padding: 15px 0 0 0;
+        }
+
+        .tdContentStyle4 {
+            text-align: left;
+            line-height: 150%;
+            padding: 2px 0 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page_content">
+        <div class="searchContent">
+            <form id="queryForm" name="queryForm" method="post">
+                <table style="float: left;">
+                    <tr>
+                        <td>姓名：</td>
+                        <td>
+                            <input type="text" id="PersonName" name="PersonName" placeholder="" />
+                        </td>
+                        <td>身份证号：</td>
+                        <td>
+                            <input type="text" id="IDCardNo" name="IDCardNo" placeholder="" />
+                        </td>
+                        <td>手机号：</td>
+                        <td>
+                            <input type="text" id="PhoneNo" name="PhoneNo" placeholder="" />
+                        </td>
+                        <td>
+                            <button type="button" onclick="searchHandler()" id="search" class="primary"><span class="icon_find">查询</span></button>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </form>
+        </div>
+        <div class="clear"></div>
+        <br />
+        <div class="infoCard infoCard2">
+            <div class="title">
+                <span>管理员列表</span>
+            </div>
+            <div class="box_tool_min padding_top2 padding_bottom2 padding_right5">
+                <div class="center">
+                    <div class="left">
+                        <div class="right">
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div id="dataBasic"></div>
+        </div>
+    </div>
+
+    <script>
+
+
+        var grid = null;
+
+        var tbData = @MvcHtmlString.Create(@ViewBag.tbData);
+
+        //数据表格使用
+        var gridData = tbData;
+
+        function initComplete() {
+            grid = $("#dataBasic").quiGrid({
+                columns: [
+                    { display: '编号', name: 'ID', align: 'center', width: "5%"},
+                    { display: '名字', name: 'PersonName', width: "5%" ,cellClick:true},
+                    { display: '身份证号', name: 'IDCardNo', width: "20%" },
+                    { display: '手机号码', name: 'PhoneNo', width: "20%" },
+                    { display: '居住地', name: 'NowAddress', width: "20%" },
+                    //{ display: '负责人电话', name: 'ManageManPhone', width: "8%" },
+                    {
+                        display: '操作', align: 'left', width: 120,
+                        render: function (rowdata, rowindex, value, column) {
+                            return '<div class="grid_opp_container">'
+                                     + '<span class="grid_opp_edit" onclick="onEdit(' + rowdata.ID + ')">修改</span>'
+                                     + '<span class="grid_opp_delete" onclick="onDelete(' + rowdata.ID + ',' + rowindex + ')">删除</span>'
+                                 + '</div>';
+                        }
+                    }
+                ],
+                onClickCell:function (rowdata, rowindex, value, column) {onView(rowdata.ID)},
+                isScroll:true,hideScrollerX:false,showPageTotalRow:true,
+                url: '/Epidemic/Index', sortName: 'ID', rownumbers: false, checkbox: false,
+                height: '100%', pageSize: 20, percentWidthMode: true,
+            });
+        }
+
+        function searchHandler() {
+            $.ajax({
+                url: "@Url.Action("QueryUserInfoAdmin")", //你的路由地址
+                type: "post",
+                dataType: "text",
+                data: $("#queryForm").serialize(),
+                timeout: 30000,
+                success: function (data) {
+                    var obj = eval('(' + data + ')');
+                    grid.loadData(obj);
+                },
+                error: function () {
+                    top.Toast('showErrorToast', '发生不可预计错误，请重新尝试');
+                }
+            });
+        }
+
+        $(function () {
+            searchHandler();
+        });
+
+        var onEdit = function(ID){
+            var url = "@Url.Action("Edit")" + "?ID=" + ID;
+            window.location.href = url;
+        }
+
+        var onView = function(ID){
+            var url = "@Url.Action("DayInfoList")" + "?ID=" + ID;
+            window.location.href = url;
+        }
+
+        var onDelete = function(ID){
+            $.post("@Url.Action("Delete")",{ID:ID},function(data){
+                if(data.sus == 1){
+                    top.Toast('showSuccessToast', '删除成功！');
+                    searchHandler();
+                }
+                else top.Toast('showErrorToast', data.msg);
+            });
+            
+        }
+    </script>
+</body>
+</html>

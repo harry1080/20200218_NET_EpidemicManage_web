@@ -1,0 +1,126 @@
+﻿
+@{
+    Layout = null;
+    var msg = ViewData["msg"];
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="~/quickui/login/style.css" />
+    <script src="~/quickui/libs/js/jquery.js"></script>
+    <script src="~/quickui/libs/js/form/placeholder.js"></script>
+    <!--框架必需start-->
+    <link href="~/quickui/libs/css/import_main.css" rel="stylesheet" type="text/css" />
+    <link href="~/quickui/libs/skins/blue/style.css" rel="stylesheet" type="text/css" id="theme" themeColor="blue" positionTarget="positionContent" />
+    <link href="skin/style.css" rel="stylesheet" type="text/css" id="skin" skinPath="~/quickui/system/style16_accordion_blue/skin/" />
+    <script type="text/javascript" src="~/quickui/libs/js/jquery.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/language/cn.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/main.js"></script>
+    <!--框架必需end-->
+    <!--弹窗组件start-->
+    <script type="text/javascript" src="~/quickui/libs/js/popup/drag.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/popup/dialog.js"></script>
+    <!--弹窗组件end-->
+    <!--引入提示组件start-->
+    <script type="text/javascript" src="~/quickui/libs/js/popup/toast.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/popup/notice.js"></script>
+    <!--引入提示组件end-->
+    <!--左侧导航start-->
+    <script type="text/javascript" src="~/quickui/libs/js/nav/menuNav.js"></script>
+
+    <!--左侧导航end-->
+    <style>
+        .syslogin {display:none;
+        }
+    </style>
+</head>
+<body>
+    <div class="win">
+        <div class="login_win">
+            <div class="">
+                <p style="text-align:center;text-align: center;color: #fff;font-size: 25px;">疫情人员管控平台</p>
+            </div>
+            <form action="" method="post" class="form_win">
+                <div class="form_title ">
+                    <span>用户登录</span>
+                </div>
+                <div class="user">
+                    <i></i><input type="text" name="txtUserName" id="txtUserName" placeholder="账号" />
+                </div>
+                <div class="passerword">
+                    <i></i><input type="password" name="txtPass" id="txtPass" placeholder="密码" />
+                </div>
+                <div class="remember clear syslogin">
+                    @*<a href="javascript:;">忘记密码？</a>*@
+                </div>
+                <input type="button" id="btnLogin" value="登 录" class="submit syslogin" style="margin-top:10px;"/>
+                @*<input type="button" id="btnReturn" value="返 回" onclick="loginSel()" class="submit syslogin" style="margin-top:10px;background-color:#9baa98;" />*@
+                
+                @*<a type="button" href="http://ids.xmu.edu.cn/authserver/login?service=https://lib.xmu.edu.cn/seat/xmulogin" id="casLogin" class="submit icologin" style="background:url(/seat/images/open_xmu_48.png) no-repeat;border:0px;margin-top:10px;background-size: 100% 40px; "></a>
+                <a type="button" href="javascript:;" id="sysLogin" onclick="sysLogin()" class="submit icologin" style="background:url(/seat/images/open_xmu_32.png) no-repeat;border:0px;margin-top:10px;background-size: 100% 40px; "></a>*@
+                <div class="login_copy">
+                    @*<a href="http://www.ncvt.net" target="_blank">官方网站：http://www.ncvt.net </a>*@
+                </div>
+            </form>
+
+        </div>
+        <!--<div class="footer">
+            <br/>官方网站：<span class="white"><a href="http://www.gxchuwei.com" target="_blank">http://www.gxchuwei.com</a></span>
+        </div>-->
+    </div>
+
+    <script>
+        var loginType = "";
+        $(function () {
+            var msg = "@msg";
+            if (msg) {
+                top.Toast('showErrorToast', msg);
+            }
+        });
+
+
+        $("#btnLogin").click(function () {
+            var $username = $("#txtUserName");
+            var $password = $("#txtPass");
+            if ($username.val() == "") {
+                $username.focus();
+                top.Toast('showErrorToast', '请输入登录账号');
+                return false;
+            } else if ($password.val() == "") {
+                $password.focus();
+                top.Toast('showErrorToast', '请输入登录密码');
+                return false;
+            } else {
+                $.ajax({
+                    url: "@Url.Action("CheckLogin")",
+                    data: { username: $.trim($username.val()), password: $password.val() },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == "yes") {
+                            top.Toast('showSuccessToast', '成功登录，正在跳转');
+                           // alert("登录成功");
+                            window.setTimeout(function () {
+                                window.location.href = "@Url.Action("index","home")";
+                            }, 500);
+                        } else {
+                            top.Toast('showErrorToast', data.message);
+                        }
+                    },
+                    error: function (data) {
+                        top.Toast('showErrorToast', "网络异常，请联系管理员");
+                    }
+                });
+            }
+        });
+
+        /*$("#casLogin").click(function () {
+            //window.href = "http://ids.xmu.edu.cn/authserver/login?service=https://lib.xmu.edu.cn/seat/xmulogin";
+        });*/
+    </script>
+</body>
+</html>

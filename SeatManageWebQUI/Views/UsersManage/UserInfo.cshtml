@@ -1,0 +1,207 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserInfo</title>
+    <!--框架必需start-->
+    <script type="text/javascript" src="~/quickui/libs/js/jquery.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/language/cn.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/framework.js"></script>
+    <link href="~/quickui/libs/css/import_basic.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" id="skin" prePath="~/quickui/" />
+    <link rel="stylesheet" type="text/css" id="customSkin" />
+    <!--框架必需end-->
+    <link rel="stylesheet" type="text/css" href="~/quickui/style/style.css" />
+
+    <script src="~/quickui/libs/js/table/quiGrid.js" type="text/javascript"></script>
+
+    <!--引入提示组件start-->
+    <script type="text/javascript" src="~/quickui/libs/js/popup/toast.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/popup/notice.js"></script>
+    <!--引入提示组件end-->
+
+    <script>
+
+    </script>
+    <style>
+        .oppContent {
+            width: 340px;
+            height: 40px;
+            float: left;
+        }
+
+        .searchContent {
+            width: 440px;
+            height: 40px;
+            position: absolute;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page_content">
+        <div class="oppContent">
+            <div class="buttonGroup" style="width: 320px;">
+                <span class="leftButton icon_add" onclick="addOrEdit('add')">新增</span>
+                <span class="leftButton icon_add" onclick="addOrEdit('edit')">编辑</span>
+                <span class="centerButton icon_delete" onclick="remove()">删除</span>
+            </div>
+        </div>
+        <div class="searchContent">
+            <form id="queryForm" name="queryForm" method="post">
+                <table style="float: right;">
+                    <tr>
+                        <td>
+                            <input type="text" placeholder="姓名" id="UserName" name="UserName" />
+                        </td>
+                        <td><button type="button" onclick="searchHandler()" id="search" class="primary"><span class="icon_find">查询</span></button></td>
+                        <td><button type="button" onclick="resetSearch()"><span class="icon_clear">重置</span></button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="clear"></div>
+
+        <div class="infoCard infoCard2">
+            <div class="title">
+                <span>用户列表</span>
+            </div>
+            <div id="dataBasic"></div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        var grid = null;
+        var dd = @MvcHtmlString.Create(@ViewBag.Data);
+        //数据表格使用
+        var gridData = dd;
+
+        function initComplete() {
+            grid = $("#dataBasic").quiGrid({
+                columns: [{
+                    display: '登录账号',
+                    name: 'LoginId',
+                    width: "15%"
+                },{
+                    display: '用户姓名',
+                    name: 'UserName',
+                    width: "20%"
+                },{
+                    display: '用户类型',
+                    name: 'UserType',
+                    width: "20%"
+                }, {
+                    display: '用户状态',
+                    name: 'IsUsing',
+                    width: "10%"
+                }, {
+                    display: '备注',
+                    name: 'Remark',
+                    width: "35%"
+                }
+                ],
+                data: gridData,
+                sortName: 'UserName',
+                rownumbers: true,
+                checkbox: false,
+                height: '99%',
+                width: "99%",
+                pageSize: 100,
+                percentWidthMode: true
+            });
+        }
+
+
+        function searchHandler(){
+            var $strWhere = $("#UserName").val();
+            console.log($strWhere);
+
+            $.ajax({
+                url: "@Url.Action("QueryUserInfo", "UsersManage")",
+                data: { strWhere: $strWhere },
+                type: "post",
+                dataType: "text",
+                success: function (data) {
+                    var obj = eval('(' + data + ')');
+                    grid.loadData(obj);
+                },error:function (data){
+                    alert(data);
+                }
+            });
+        }
+
+        function remove(){
+            var selectData = grid.getSelectedRow(); 
+            if(selectData==null)
+            {
+                top.Toast('showErrorToast', '请选中要删除的行');
+            }else if(selectData.LoginId == "admin" || selectData.LoginId == "user" || selectData.LoginId == "reader")
+            {
+                top.Toast('showErrorToast', selectData.LoginId+'是保留用戶不能刪除');
+            }else{
+                top.Dialog.confirm("确认删除"+selectData.LoginId+"编号的记录吗",
+                    function(){
+                        $.ajax({
+                            url: "@Url.Action("RemoveUser", "UsersManage")",
+                            data: { LoginId: selectData.LoginId },
+                            type: "post",
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.status == "yes") {
+                                    //location.href='/UsersManage/UserInfo'
+                                    top.Toast('showSuccessToast', data.message);
+                                    searchHandler();
+                                } else {
+                                    top.Toast('showErrorToast', data.message);
+                                }
+                            }
+                        });
+                    },
+                    function(){
+                        //点击了取消
+                    });
+            }
+        }
+
+        function addOrEdit(op){
+            
+            var url = "";
+            if(op == 'add'){
+                url = "@Url.Action("AddOrEdit", "UsersManage")?op="+op+"&LoginId=0";
+            }else if(op == 'edit'){
+                var selectData = grid.getSelectedRow(); 
+
+                if(selectData==null)
+                {
+                    top.Toast('showErrorToast', '请选中要编辑的行');
+                }
+
+                url = "@Url.Action("AddOrEdit", "UsersManage")?op="+op+"&LoginId="+selectData.LoginId;
+            }
+            var diag = new top.Dialog();
+            diag.Title = '操作窗口';
+            diag.URL = url;
+            diag.Width=800;
+            diag.Height=600;
+            diag.OkButtonText = "保 存";
+            //顺序很重要，diag.show()之前添加确定按钮事件，show之后添加新按钮
+            diag.OKEvent = function() {
+                //var inputValue = diag.innerFrame.contentWindow.myTest();
+                var inputValue = diag.innerFrame.contentWindow.myTest();
+                searchHandler();
+            };
+            diag.show();
+
+        }
+
+    </script>
+</body>
+</html>

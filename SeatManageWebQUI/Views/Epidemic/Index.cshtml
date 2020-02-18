@@ -1,0 +1,240 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <!--框架必需start-->
+    <script type="text/javascript" src="~/quickui/libs/js/jquery.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/language/cn.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/framework.js"></script>
+    <link href="~/quickui/libs/css/import_basic.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" id="skin" prePath="~/quickui/" />
+    <link rel="stylesheet" type="text/css" id="customSkin" />
+    <!--框架必需end-->
+    <link rel="stylesheet" type="text/css" href="~/quickui/style/style.css" />
+    <script src="~/quickui/libs/js/table/quiGrid.js" type="text/javascript"></script>
+    <!--引入提示组件start-->
+    <script type="text/javascript" src="~/quickui/libs/js/popup/toast.js"></script>
+    <script type="text/javascript" src="~/quickui/libs/js/popup/notice.js"></script>
+    <!--引入提示组件end-->
+    <script type="text/javascript" src="~/quickui/libs/js/form/datePicker/WdatePicker.js"></script>
+    <script src="~/quickui/libs/js/form/validationRule.js" type="text/javascript"></script>
+    <script src="~/quickui/libs/js/form/validation.js" type="text/javascript"></script>
+
+    <style>
+
+        .selectbox {
+            width:150px !important;
+        }
+        .tdContentStyle1 {
+            font-size: 16px;
+            color: #ea5504;
+            background-image: url(<%=path%>/libs/images/icons/hot.jpg);
+            background-position: 90% 10px;
+            background-repeat: no-repeat;
+            padding: 5px 0 0 10px;
+        }
+
+        .tdContentStyle2 {
+            font-size: 16px;
+            color: #ea5504;
+            padding: 5px 0 0 10px;
+        }
+
+        .tdContentStyle3 {
+            padding: 15px 0 0 0;
+        }
+
+        .tdContentStyle4 {
+            text-align: left;
+            line-height: 150%;
+            padding: 2px 0 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page_content">
+        <div class="searchContent">
+            <form id="queryForm" name="queryForm" method="post">
+                <table style="float: left;">
+                    <tr>
+                        <td>人员分类</td>
+                        <td>
+                            <select id="PersonType" name="PersonType" style="width: 150px;">
+                                <option value="">全部分类</option>
+                                <option value="未设置">未设置</option>
+                                <option value="来自武汉人员">来自武汉人员</option>
+                                <option value="来自湖北（非武汉）人员">来自湖北（非武汉）人员</option>
+                                <option value="到过武汉人员">到过武汉人员</option>
+                                <option value="到过湖北（非武汉）人员">到过湖北（非武汉）人员</option>
+                                <option value="密切接触人员">密切接触人员</option>
+                                <option value="我市在鄂人员">我市在鄂人员</option>
+                                <option value="发热观察人员">发热观察人员</option>
+                                <option value="购药人员"> 购药人员</option>
+                                <option value="都安地区到港人员"> 都安地区到港人员</option>
+                                <option value="灵山地区到港人员"> 灵山地区到港人员</option>
+                            </select>
+                        </td>
+                        <td>姓名：</td>
+                        <td>
+                            <input type="text" id="PersonName" name="PersonName" placeholder="" style="width: 180px;"/>
+                        </td>
+                        <td>身份证号：</td>
+                        <td>
+                            <input type="text" id="IDCardNo" name="IDCardNo" placeholder="" style="width: 150px;" />
+                        </td>
+                        <td>地址：
+                            <input type="text" id="NowAddress" name="NowAddress" placeholder="" style="width: 150px;" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>所属区域：</td>
+                        <td>
+                            <select id="Area" name="Area" style="width: 150px;">
+                                <option value="">全部区域</option>
+                                <option value="未设置">未设置</option>
+                                <option value="渔洲坪街道">渔洲坪街道</option>
+                                <option value="白沙万街道">白沙万街道</option>
+                                <option value="沙潭江街道">沙潭江街道</option>
+                                <option value="王府街道">王府街道</option>
+                                <option value="光坡镇">光坡镇</option>
+                                <option value="企沙镇">企沙镇</option>
+                            </select>
+                        </td>
+                        <td>管控措施：</td>
+                        <td>
+                            <select id="DisposeType" name="DisposeType" style="width: 150px;">
+                                <option value="">全部类型</option>
+                                <option value="未设置">未设置</option>
+                                <option value="居家观察">居家观察</option>
+                                <option value="指定场所观察">指定场所观察</option>
+                                <option value="医学观察">医学观察</option>
+                                <option value="治疗">治疗</option>
+                                <option value="解除管控">解除管控</option>
+                            </select>
+                        </td>
+                        <td>负责人：</td>
+                        <td>
+                            <input type="text" id="ManageMan" name="ManageMan" placeholder="" style="width: 150px;"/>
+                        </td>
+                        <td>
+                            <button type="button" onclick="searchHandler()" id="search" class="primary"><span class="icon_find">查询</span></button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="clear"></div>
+        <br />
+        <div class="infoCard infoCard2">
+
+            <div id="dataBasic"></div>
+        </div>
+    </div>
+    <style>
+
+    </style>
+    <script>
+
+
+        var grid = null;
+
+        var tbData = @MvcHtmlString.Create(@ViewBag.tbData);
+
+        //数据表格使用
+        var gridData = tbData;
+
+        function initComplete() {
+            grid = $("#dataBasic").quiGrid({
+                columns: [
+                    { display: '编号', name: 'ID', align: 'center', width: 80},
+                    { display: '人员分类', name: 'PersonType', width: 150},
+                    { display: '名字', name: 'PersonName', width: 100 ,cellClick:true},
+                    { display: '性别', name: 'Sex', width: 60 },
+                    { display: '身份证号', name: 'IDCardNo', width: 180 },
+                    { display: '手机号码', name: 'PhoneNo', width: 120 },
+                    { display: '到港时间', name: 'ArriveTimeStr', width: 110 },
+                    { display: '到港目的', name: 'ArrivePurpose', width: 100 },
+                    { display: '交通方式', name: 'Traffic', width: 120 },
+                    { display: '身体状况', name: 'LastTempStr', width: 110 ,
+                        render: function (rowdata, rowindex, value, column){
+                            var strhtml= rowdata.LastTempStr;
+                        return strhtml;
+                    }  },
+                    { display: '管控措施', name: 'DisposeType', width: 120 },
+                    { display: '负责人', name: 'ManageMan', width: 100 },
+                    //{ display: '负责人电话', name: 'ManageManPhone', width: "8%" },
+                    {
+                        display: '操作', align: 'left', width: 120,
+                        render: function (rowdata, rowindex, value, column) {
+                            return '<div class="grid_opp_container">'
+                                     + '<span class="grid_opp_edit" onclick="onEdit(' + rowdata.ID + ')">修改</span>'
+                                     + '<span class="grid_opp_delete" onclick="onDelete(' + rowdata.ID + ',' + rowindex + ')">删除</span>'
+                                 + '</div>';
+                        }
+                    }
+                ],
+                onClickCell:function (rowdata, rowindex, value, column) {onView(rowdata.ID)},
+                isScroll:false,percentWidthMode:false,showPageTotalRow:false,
+                url: '/Epidemic/Index', sortName: 'ID', rownumbers: false, checkbox: false,
+                height: '100%', pageSize: 50,
+            });
+            
+        }
+
+        function searchHandler() {
+            var hh = $(window).height() - $("table").eq(0).height() - 180;
+            $(".l-scroll").css("height",hh + "px");
+            
+            $.ajax({
+                url: "@Url.Action("QueryUserInfo")", //你的路由地址
+                type: "post",
+                dataType: "text",
+                data: $("#queryForm").serialize(),
+                timeout: 30000,
+                success: function (data) {
+                    var obj = eval('(' + data + ')');
+                    $(".l-panel-pagebar").append('<div style="float:right;padding:5px 0 0 2px">总共 '+JSON.parse(data)["form.paginate.totalRows"]+' 条</div>');
+                    grid.loadData(obj);
+                },
+                error: function () {
+                    top.Toast('showErrorToast', '发生不可预计错误，请重新尝试');
+                }
+            });
+        }
+
+        $(function () {
+            searchHandler();
+        });
+
+        var onEdit = function(ID){
+            var url = "@Url.Action("Edit")" + "?ID=" + ID;
+            window.location.href = url;
+        }
+
+        var onView = function(ID){
+            var url = "@Url.Action("DayInfoList")" + "?ID=" + ID;
+            window.location.href = url;
+        }
+
+        var onDelete = function(ID){
+            $.post("@Url.Action("Delete")",{ID:ID},function(data){
+                if(data.sus == 1){
+                    top.Toast('showSuccessToast', '删除成功！');
+                    searchHandler();
+                }
+                else top.Toast('showErrorToast', data.msg);
+            });
+            
+        }
+    </script>
+</body>
+</html>
