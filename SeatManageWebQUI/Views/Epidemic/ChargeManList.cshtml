@@ -28,10 +28,10 @@
     <script src="~/quickui/libs/js/form/validation.js" type="text/javascript"></script>
 
     <style>
-
         .selectbox {
-            width:150px !important;
+            width: 150px !important;
         }
+
         .tdContentStyle1 {
             font-size: 16px;
             color: #ea5504;
@@ -59,7 +59,6 @@
     </style>
 </head>
 <body>
-
     <div class="page_content">
         <div class="searchContent">
             <form id="queryForm" name="queryForm" method="post">
@@ -84,14 +83,22 @@
                         </td>
                         <td>姓名：</td>
                         <td>
-                            <input type="text" id="PersonName" name="PersonName" placeholder="" style="width: 180px;"/>
+                            <input type="text" id="PersonName" name="PersonName" placeholder="" style="width: 180px;" />
                         </td>
                         <td>身份证号：</td>
                         <td>
                             <input type="text" id="IDCardNo" name="IDCardNo" placeholder="" style="width: 150px;" />
                         </td>
-                        <td>地址：
-                            <input type="text" id="NowAddress" name="NowAddress" placeholder="" style="width: 150px;" />
+                        <td>体温:</td>
+                        <td>
+                           
+                            <select id="PersonTemp" name="PersonTemp" style="width: 150px;">
+                                <option value="全部数据">全部数据</option>
+                                <option value="未按时报体温">未按时报体温</option>
+                                <option value="已按时报体温">已按时报体温</option>
+                            </select>
+
+                            @*<input type="text" id="NowAddress" name="NowAddress" placeholder="" style="width: 150px;" />*@
                         </td>
                     </tr>
 
@@ -124,7 +131,7 @@
                         </td>
                         <td>负责人：</td>
                         <td>
-                            <input type="text" id="ManageMan" name="ManageMan" placeholder="" style="width: 150px;"/>
+                            <input type="text" id="ManageMan" name="ManageMan" placeholder="" style="width: 150px;" />
                         </td>
                         <td>
                             <button type="button" onclick="searchHandler()" id="search" class="primary"><span class="icon_find">查询</span></button>
@@ -141,7 +148,6 @@
         </div>
     </div>
     <style>
-
     </style>
     <script>
 
@@ -162,9 +168,9 @@
                     { display: '性别', name: 'Sex', width: 60 },
                     { display: '身份证号', name: 'IDCardNo', width: 180 },
                     { display: '手机号码', name: 'PhoneNo', width: 120 },
-                    { display: '到港时间', name: 'ArriveTimeStr', width: 110 },
-                    { display: '到港目的', name: 'ArrivePurpose', width: 100 },
-                    { display: '交通方式', name: 'Traffic', width: 120 },
+                    //{ display: '到港时间', name: 'ArriveTimeStr', width: 110 },
+                    //{ display: '到港目的', name: 'ArrivePurpose', width: 100 },
+                    //{ display: '交通方式', name: 'Traffic', width: 120 },
                     { display: '身体状况', name: 'LastTempStr', width: 110 ,
                         render: function (rowdata, rowindex, value, column){
                             var strhtml= rowdata.LastTempStr;
@@ -173,6 +179,7 @@
                     { display: '管控措施', name: 'DisposeType', width: 120 },
                     { display: '负责人', name: 'ManageMan', width: 100 },
                     //{ display: '负责人电话', name: 'ManageManPhone', width: "8%" },
+                     { display: '同住人员', name: 'TogetherPersonString', width: 330 },
                     {
                         display: '操作', align: 'left', width: 120,
                         render: function (rowdata, rowindex, value, column) {
@@ -185,7 +192,7 @@
                 ],
                 onClickCell:function (rowdata, rowindex, value, column) {onView(rowdata.ID)},
                 isScroll:false,percentWidthMode:false,showPageTotalRow:false,
-                url: '/Epidemic/Index', sortName: 'ID', rownumbers: false, checkbox: false,
+                url: '/Epidemic/ChargeManList', sortName: 'ID', rownumbers: false, checkbox: false,
                 height: '100%', pageSize: 50,
             });
 
@@ -196,7 +203,7 @@
             $(".l-scroll").css("height",hh + "px");
 
             $.ajax({
-                url: "@Url.Action("QueryUserInfo")", //你的路由地址
+                url: "@Url.Action("QueryChargeManList")", //你的路由地址
                 type: "post",
                 dataType: "text",
                 data: $("#queryForm").serialize(),
@@ -227,6 +234,7 @@
         }
 
         var onDelete = function(ID){
+
             top.Dialog.confirm("确认删除记录吗",
             function(){
                 $.post("@Url.Action("Delete")",{ID:ID},function(data){

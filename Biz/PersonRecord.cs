@@ -118,10 +118,17 @@ namespace com.gxchuwei.BLL
 			DataSet ds = dal.GetList(strWhere);
 			return DataTableToList(ds.Tables[0]);
 		}
-		/// <summary>
-		/// 获得数据列表
-		/// </summary>
-		public List<com.gxchuwei.Model.PersonRecord> DataTableToList(DataTable dt)
+
+        public int GetRecordCount(int personID, string date)
+        {
+            return dal.GetRecordCount(personID,date);
+        }
+
+
+        /// <summary>
+        /// 获得数据列表
+        /// </summary>
+        public List<com.gxchuwei.Model.PersonRecord> DataTableToList(DataTable dt)
 		{
 			List<com.gxchuwei.Model.PersonRecord> modelList = new List<com.gxchuwei.Model.PersonRecord>();
 			int rowsCount = dt.Rows.Count;

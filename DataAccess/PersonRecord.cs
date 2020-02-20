@@ -260,6 +260,16 @@ namespace com.gxchuwei.DAL
 			return DbHelperSQL.Query(strSql.ToString());
 		}
 
+        public int GetRecordCount(int personID,string date)
+        {
+            int count = 0;
+
+            string sql = "select count(ID) from PersonRecord where PersonID="+personID+ " and (DeclarationTime>='"+ date + " 00:00:00') and DeclarationTime<='"+date+" 23:59:59'";
+            Object obj = DbHelperSQL.GetSingle(sql);
+            count = int.Parse(obj.ToString());
+            return count;
+        }
+
 		/// <summary>
 		/// 获得前几行数据
 		/// </summary>

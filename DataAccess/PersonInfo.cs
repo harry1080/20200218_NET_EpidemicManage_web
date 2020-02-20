@@ -262,7 +262,7 @@ namespace com.gxchuwei.DAL
 		{
 			
 			StringBuilder strSql=new StringBuilder();
-			strSql.Append("select  top 1 ID,PersonType,PersonName,Sex,IDCardNo,PhoneNo,Native,ArriveTime,ArrivePurpose,Traffic,PhysicalState,LastTemp,LastTempDate,NowAddress,DisposeType,ManageMan,ManageManPhone,LocationX,LocationY,Location,ByeondWarning,UserType,LoginName,LoginPassword,IsAdmin,RecordLastTime,Area from PersonInfo ");
+			strSql.Append("select  top 1 ID,PersonType,PersonName,Sex,IDCardNo,PhoneNo,Native,ArriveTime,ArrivePurpose,Traffic,PhysicalState,LastTemp,LastTempDate,NowAddress,DisposeType,ManageMan,ManageManPhone,LocationX,LocationY,Location,ByeondWarning,UserType,LoginName,LoginPassword,IsAdmin,RecordLastTime,Area,PID from PersonInfo ");
 			strSql.Append(" where ID=@ID");
 			SqlParameter[] parameters = {
 					new SqlParameter("@ID", SqlDbType.Int,4)
@@ -416,6 +416,10 @@ namespace com.gxchuwei.DAL
                 {
                     model.LastTempDate = DateTime.Parse(row["LastTempDate"].ToString());
                 }
+                if (row["PID"] != null && row["PID"].ToString() != "")
+                {
+                    model.PID = int.Parse(row["PID"].ToString());
+                }
             }
 			return model;
 		}
@@ -426,7 +430,7 @@ namespace com.gxchuwei.DAL
 		public DataSet GetList(string strWhere)
 		{
 			StringBuilder strSql=new StringBuilder();
-			strSql.Append("select ID,PersonType,PersonName,Sex,IDCardNo,PhoneNo,Native,ArriveTime,ArrivePurpose,Traffic,Area,PhysicalState,LastTemp,LastTempDate,NowAddress,DisposeType,ManageMan,ManageManPhone,LocationX,LocationY,Location,ByeondWarning,UserType,LoginName,LoginPassword,IsAdmin,RecordLastTime ");
+			strSql.Append("select ID,PersonType,PersonName,Sex,IDCardNo,PhoneNo,Native,ArriveTime,ArrivePurpose,Traffic,Area,PhysicalState,LastTemp,LastTempDate,NowAddress,DisposeType,ManageMan,ManageManPhone,LocationX,LocationY,Location,ByeondWarning,UserType,LoginName,LoginPassword,IsAdmin,RecordLastTime ,PID");
 			strSql.Append(" FROM PersonInfo ");
 			if(strWhere.Trim()!="")
 			{

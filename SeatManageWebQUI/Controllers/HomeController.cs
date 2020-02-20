@@ -20,7 +20,8 @@ namespace SeatManageWebQUI.Controllers
             rootPath = rootPath == null ? "" : rootPath;
             menuString.Append("  { \"open\": \"true\",\"id\":\"1\", \"parentId\":\"0\", \"name\":\"系统菜单\", \"isParent\": \"true\",\"backgroundPosition\":\"0px - 80px\",\"img\":\"./ skin / topIcons / icon01.png\"},");
             //menuString.Append("{ \"id\":\"2\", \"parentId\":\"1\", \"name\":\"录入信息\",\"url\":\"/Epidemic/edit\", \"target\":\"frmright\",\"icon\": \"./skin/nav_icon_bg.png\",\"backgroundPosition\":\"0px - 128px\"},");
-            menuString.Append("{ \"id\":\"3\", \"parentId\":\"1\", \"name\":\"人员列表\",\"url\":\"/Epidemic/index\", \"target\":\"frmright\",\"icon\": \"./skin/nav_icon_bg.png\",\"backgroundPosition\":\"0px - 128px\"},");
+            menuString.Append("{ \"id\":\"3\", \"parentId\":\"1\", \"name\":\"全部人员列表\",\"url\":\"/Epidemic/index\", \"target\":\"frmright\",\"icon\": \"./skin/nav_icon_bg.png\",\"backgroundPosition\":\"0px - 128px\"},");
+            menuString.Append("{ \"id\":\"5\", \"parentId\":\"1\", \"name\":\"管控人员列表\",\"url\":\"/Epidemic/chargeManList\", \"target\":\"frmright\",\"icon\": \"./skin/nav_icon_bg.png\",\"backgroundPosition\":\"0px - 128px\"},");
             if (IsSupAdmin)
             {
                 menuString.Append("{ \"id\":\"4\", \"parentId\":\"1\", \"name\":\"管理员列表\",\"url\":\"/Epidemic/adminList\", \"target\":\"frmright\",\"icon\": \"./skin/nav_icon_bg.png\",\"backgroundPosition\":\"0px - 128px\"}");

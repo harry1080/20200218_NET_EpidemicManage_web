@@ -12,6 +12,11 @@ namespace SeatManageWebQUI.Controllers.Menu
     public class MenuController : BaseController
     {
 
+        public ActionResult ChargeManList()
+        {
+            return View();
+        }
+
         public ActionResult EpidemicAdd()
         {
             return View();

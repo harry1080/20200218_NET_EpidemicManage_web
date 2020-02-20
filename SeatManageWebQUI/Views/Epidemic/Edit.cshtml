@@ -122,6 +122,7 @@
                     <td>
                         <select id="DisposeType" name="DisposeType">
                             <option @(Model.DisposeType == "未设置" ? "selected" : "") value="未设置">未设置</option>
+                            <option @(Model.DisposeType == "同住未控" ? "selected" : "") value="同住未控">同住未控</option>
                             <option @(Model.DisposeType == "居家观察" ? "selected" : "") value="居家观察">居家观察</option>
                             <option @(Model.DisposeType == "指定场所观察" ? "selected" : "") value="指定场所观察">指定场所观察</option>
                             <option @(Model.DisposeType == "医学观察" ? "selected" : "") value="医学观察">医学观察</option>

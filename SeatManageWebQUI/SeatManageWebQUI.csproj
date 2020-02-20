@@ -4147,6 +4147,7 @@
     <Content Include="Views\Epidemic\Edit.cshtml" />
     <Content Include="Views\Epidemic\DayInfoList.cshtml" />
     <Content Include="Views\Epidemic\adminList.cshtml" />
+    <Content Include="Views\Epidemic\ChargeManList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

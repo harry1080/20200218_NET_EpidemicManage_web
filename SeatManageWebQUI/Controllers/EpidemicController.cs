@@ -10,6 +10,125 @@ namespace SeatManageWebQUI.Controllers
 {
     public class EpidemicController : BaseController
     {
+        #region 管控人员列表 zdh添加
+        ////管控人员列表
+        public ActionResult ChargeManList()
+        {
+            string gridData = QueryChargeManList(new com.gxchuwei.Model.PersonInfo());
+            ViewBag.tbData = gridData;
+            return View();
+        }
+
+        public string QueryChargeManList(com.gxchuwei.Model.PersonInfo param)
+        {
+            com.gxchuwei.BLL.PersonInfo bll = new com.gxchuwei.BLL.PersonInfo();
+            var where = "(isadmin <> '1' or isadmin is null)";
+            if (!IsSupAdmin)
+            {
+                where += " and ManageMan = '" + LoginId + "'";
+            }
+
+            where += " and DisposeType<>'未设置' and DisposeType<>'同住未控' ";
+
+           
+
+            List<com.gxchuwei.Model.PersonInfo> userlist = bll.GetChargeManList(where);
+            userlist = userlist.OrderByDescending(x => x.ID).ToList();
+
+            List<com.gxchuwei.Model.PersonInfo> newUserlist = new List<com.gxchuwei.Model.PersonInfo>();//新集合
+            //体温条件
+            if (param.PersonTemp == "全部数据")
+            {
+                newUserlist = userlist;
+            }
+            else if (param.PersonTemp == "未按时报体温")
+            {
+                DateTime yestoday = DateTime.Now.AddDays(-1);
+                com.gxchuwei.BLL.PersonRecord bllPersonRecord = new com.gxchuwei.BLL.PersonRecord();
+                var sublist = new List<com.gxchuwei.Model.PersonRecord>();
+                foreach (var item in userlist)
+                {
+                    int count = bllPersonRecord.GetRecordCount(item.ID, yestoday.Date.ToString("yyyy-MM-dd"));
+                    if (count < 2)
+                    {
+                        newUserlist.Add(item);
+                    }
+                }
+            }
+            else if (param.PersonTemp == "已按时报体温")
+            {
+                DateTime yestoday = DateTime.Now.AddDays(-1);
+                com.gxchuwei.BLL.PersonRecord bllPersonRecord = new com.gxchuwei.BLL.PersonRecord();
+                var sublist = new List<com.gxchuwei.Model.PersonRecord>();
+                foreach (var item in userlist)
+                {
+                    int count = bllPersonRecord.GetRecordCount(item.ID, yestoday.Date.ToString("yyyy-MM-dd"));
+                    if (count >= 2)
+                    {
+                        newUserlist.Add(item);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(param.PersonName))
+            {
+                newUserlist = newUserlist.Where(x => x.PersonName.Contains(param.PersonName)).ToList();
+            }
+            if (!string.IsNullOrEmpty(param.IDCardNo))
+            {
+                newUserlist = newUserlist.Where(x => x.IDCardNo.Contains(param.IDCardNo)).ToList();
+            }
+            if (!string.IsNullOrEmpty(param.NowAddress))
+            {
+                newUserlist = newUserlist.Where(x => x.NowAddress.Contains(param.NowAddress)).ToList();
+            }
+            if (!string.IsNullOrEmpty(param.PersonType))
+            {
+                newUserlist = newUserlist.Where(x => x.PersonType.Contains(param.PersonType)).ToList();
+            }
+            if (!string.IsNullOrEmpty(param.Area))
+            {
+                newUserlist = newUserlist.Where(x => x.Area.Contains(param.Area)).ToList();
+            }
+            if (!string.IsNullOrEmpty(param.DisposeType))
+            {
+                newUserlist = newUserlist.Where(x => x.DisposeType.Contains(param.DisposeType)).ToList();
+            }
+            if (!string.IsNullOrEmpty(param.ManageMan))
+            {
+                newUserlist = newUserlist.Where(x => x.ManageMan.Contains(param.ManageMan)).ToList();
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{");
+            sb.Append("\"form.paginate.pageNo\": 1,");
+            sb.Append("\"form.paginate.totalRows\": " + userlist.Count.ToString() + ",");
+            sb.Append("	\"rows\": ");
+            foreach (com.gxchuwei.Model.PersonInfo item in newUserlist)
+            {
+                if (item.LastTempDate.HasValue && item.LastTemp.HasValue)
+                {
+                    string css = "";
+                    if (("咳嗽、发热、乏力").Contains(item.PhysicalState) && (double)item.LastTemp.Value > 37.2)
+                    {
+                        css = "color: #FF0000;";
+                    }
+                    item.LastTempStr = "<div class='tdContentStyle4' style='" + css + "'>" + item.PhysicalState + "（" + item.LastTemp.Value.ToString() + "°C" + @"）<br//\> " + item.LastTempDate.Value.ToString("yyyy -MM-dd") + "</div>";
+                }
+                else item.LastTempStr = "";
+                if (item.ArriveTime.HasValue)
+                    item.ArriveTimeStr = item.ArriveTime.Value.ToString("yyyy-MM-dd");
+                else item.ArriveTimeStr = "";
+            }
+            sb.Append(JSONSerializer.Serialize(newUserlist));
+            //sb.Remove(sb.Length - 1, 1);
+            sb.Append("}");
+            string data = sb.ToString();
+            return data;
+        }
+
+        #endregion
+
         // GET: list
         public ActionResult Index()
         {

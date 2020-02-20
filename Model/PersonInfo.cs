@@ -27,6 +27,42 @@ namespace com.gxchuwei.Model
             }
         }
 
+
+        private string _togetherPersonString;
+
+        public string TogetherPersonString
+        {
+            get
+            {
+                string returnStr = "";
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                sb.Append("");
+                if (TogetherPerson != null)
+                {
+                    foreach (var item in TogetherPerson)
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(item.PersonName);
+                            sb.Append(",");
+                        }
+                    }
+                    returnStr = sb.ToString();
+                    returnStr = returnStr.TrimEnd(',');
+                }
+                return returnStr;
+            }
+        }
+
+
+        public string _personTemp;
+
+        public string PersonTemp
+        {
+            get { return _personTemp; }
+            set { _personTemp = value; }
+        }
+
         #region Model
         private int _id;
 		private string _persontype;
@@ -55,6 +91,14 @@ namespace com.gxchuwei.Model
 		private string _loginpassword;
 		private string _isadmin;
 		private DateTime? _recordlasttime;
+        private int _pId;
+
+        public int PID
+        {
+            set { _pId = value; }
+            get { return _pId; }
+        }
+
 		/// <summary>
 		/// 
 		/// </summary>
