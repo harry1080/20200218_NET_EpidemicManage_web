@@ -42,6 +42,7 @@
                     <td>
                         <select id="PersonType" name="PersonType">
                             <option @(Model.PersonType == "未设置" ? "selected" : "") value="未设置">未设置</option>
+                            <option @(Model.PersonType == "同住人员" ? "selected" : "") value="同住人员">同住人员</option>
                             <option @(Model.PersonType == "来自武汉人员" ? "selected" : "") value="来自武汉人员">来自武汉人员</option>
                             <option @(Model.PersonType == "来自湖北（非武汉）人员" ? "selected" : "") value="来自湖北（非武汉）人员">来自湖北（非武汉）人员</option>
                             <option @(Model.PersonType == "到过武汉人员" ? "selected" : "") value="到过武汉人员">到过武汉人员</option>

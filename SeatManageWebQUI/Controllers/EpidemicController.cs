@@ -29,9 +29,6 @@ namespace SeatManageWebQUI.Controllers
             }
 
             where += " and DisposeType<>'未设置' and DisposeType<>'同住未控' ";
-
-           
-
             List<com.gxchuwei.Model.PersonInfo> userlist = bll.GetChargeManList(where);
             userlist = userlist.OrderByDescending(x => x.ID).ToList();
 
@@ -44,25 +41,34 @@ namespace SeatManageWebQUI.Controllers
             else if (param.PersonTemp == "未按时报体温")
             {
                 DateTime yestoday = DateTime.Now.AddDays(-1);
+                string yestodayStr = yestoday.Date.ToString("yyyy-MM-dd");
+
                 com.gxchuwei.BLL.PersonRecord bllPersonRecord = new com.gxchuwei.BLL.PersonRecord();
                 var sublist = new List<com.gxchuwei.Model.PersonRecord>();
+
+
+                sublist = bllPersonRecord.GetModelList(" (DeclarationTime>='" + yestodayStr + " 00:00:00') and DeclarationTime<='" + yestodayStr + " 23:59:59'");
                 foreach (var item in userlist)
                 {
-                    int count = bllPersonRecord.GetRecordCount(item.ID, yestoday.Date.ToString("yyyy-MM-dd"));
+                    int count = sublist.Where(p => p.PersonID == item.ID && p.DeclarationTime.Value.Date== yestoday.Date).Count();
+                    //int count = bllPersonRecord.GetRecordCount(item.ID, yestoday.Date.ToString("yyyy-MM-dd"));
                     if (count < 2)
                     {
                         newUserlist.Add(item);
                     }
                 }
+                
             }
             else if (param.PersonTemp == "已按时报体温")
             {
                 DateTime yestoday = DateTime.Now.AddDays(-1);
+                string yestodayStr = yestoday.Date.ToString("yyyy-MM-dd");
                 com.gxchuwei.BLL.PersonRecord bllPersonRecord = new com.gxchuwei.BLL.PersonRecord();
                 var sublist = new List<com.gxchuwei.Model.PersonRecord>();
+                sublist = bllPersonRecord.GetModelList(" (DeclarationTime>='" + yestodayStr + " 00:00:00') and DeclarationTime<='" + yestodayStr + " 23:59:59'");
                 foreach (var item in userlist)
                 {
-                    int count = bllPersonRecord.GetRecordCount(item.ID, yestoday.Date.ToString("yyyy-MM-dd"));
+                    int count = sublist.Where(p => p.PersonID == item.ID && p.DeclarationTime.Value.Date == yestoday.Date).Count();
                     if (count >= 2)
                     {
                         newUserlist.Add(item);
@@ -102,7 +108,7 @@ namespace SeatManageWebQUI.Controllers
             StringBuilder sb = new StringBuilder();
             sb.Append("{");
             sb.Append("\"form.paginate.pageNo\": 1,");
-            sb.Append("\"form.paginate.totalRows\": " + userlist.Count.ToString() + ",");
+            sb.Append("\"form.paginate.totalRows\": " + newUserlist.Count.ToString() + ",");
             sb.Append("	\"rows\": ");
             foreach (com.gxchuwei.Model.PersonInfo item in newUserlist)
             {
