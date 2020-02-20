@@ -156,22 +156,22 @@
         function initComplete() {
             grid = $("#dataBasic").quiGrid({
                 columns: [
-                    { display: '编号', name: 'ID', align: 'center', width: 80},
-                    { display: '人员分类', name: 'PersonType', width: 150},
-                    { display: '名字', name: 'PersonName', width: 100 ,cellClick:true},
+                    { display: '编号', name: 'ID', align: 'center', width: 50},
+                    { display: '人员分类', name: 'PersonType', width: 120},
+                    { display: '名字', name: 'PersonName', width: 80 ,cellClick:true},
                     { display: '性别', name: 'Sex', width: 60 },
-                    { display: '身份证号', name: 'IDCardNo', width: 180 },
-                    { display: '手机号码', name: 'PhoneNo', width: 120 },
+                    { display: '身份证号', name: 'IDCardNo', width: 150 },
+                    { display: '手机号码', name: 'PhoneNo', width: 100 },
                     { display: '到港时间', name: 'ArriveTimeStr', width: 110 },
-                    { display: '到港目的', name: 'ArrivePurpose', width: 100 },
-                    { display: '交通方式', name: 'Traffic', width: 120 },
+                    { display: '到港目的', name: 'ArrivePurpose', width: 80 },
+                    { display: '交通方式', name: 'Traffic', width: 90 },
                     { display: '身体状况', name: 'LastTempStr', width: 110 ,
                         render: function (rowdata, rowindex, value, column){
                             var strhtml= rowdata.LastTempStr;
                         return strhtml;
                     }  },
-                    { display: '管控措施', name: 'DisposeType', width: 120 },
-                    { display: '负责人', name: 'ManageMan', width: 100 },
+                    { display: '管控措施', name: 'DisposeType', width: 80 },
+                    { display: '负责人', name: 'ManageMan', width: 80 },
                     //{ display: '负责人电话', name: 'ManageManPhone', width: "8%" },
                     {
                         display: '操作', align: 'left', width: 120,
