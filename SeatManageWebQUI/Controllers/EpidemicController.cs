@@ -119,7 +119,7 @@ namespace SeatManageWebQUI.Controllers
                     {
                         css = "color: #FF0000;";
                     }
-                    item.LastTempStr = "<div class='tdContentStyle4' style='" + css + "'>" + item.PhysicalState + "（" + item.LastTemp.Value.ToString() + "°C" + @"）<br//\> " + item.LastTempDate.Value.ToString("yyyy -MM-dd") + "</div>";
+                    item.LastTempStr = "<div class='tdContentStyle4' style='" + css + "'>" + item.PhysicalState + "（" + item.LastTemp.Value.ToString() + "°C" + @"）<br//\> " + item.LastTempDate.Value.ToString("yyyy-MM-dd") + "</div>";
                 }
                 else item.LastTempStr = "";
                 if (item.ArriveTime.HasValue)
